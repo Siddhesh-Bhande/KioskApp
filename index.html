@@ -17,27 +17,50 @@
         background-color: #f0f0f0;
       }
       .rotated-container {
-        transform: rotate(-90deg);
-        transform-origin: center;
+        transform-origin: center center;
         overflow: hidden;
         width: 1080px;
         height: 1920px;
-        max-height: 1920px;
-        max-width: 1080px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      iframe {
+        width: 1080px;
+        height: 1920px;
+        border: none;
       }
     </style>
   </head>
   <body>
-    <div class="rotated-container">
+    <div class="rotated-container" id="rotatedContainer">
       <iframe
         id="kioskIframe"
         src="https://staging.symquintest.com/"
         title="Example Website"
-        class="w-fit h-fit"
       ></iframe>
     </div>
 
     <script>
+      function adjustContainerScale() {
+        const container = document.getElementById("rotatedContainer");
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+
+        // Calculate the scale to fit the container within the viewport
+        const scaleWidth = viewportWidth / 1920; // We use the height as width due to rotation
+        const scaleHeight = viewportHeight / 1080; // We use the width as height due to rotation
+        const scale = Math.min(scaleWidth, scaleHeight);
+
+        // Apply the scale and rotation
+        container.style.transform = `scale(${scale}) rotate(-90deg)`;
+      }
+
+      // Adjust the scale on page load and window resize
+      window.addEventListener("load", adjustContainerScale);
+      window.addEventListener("resize", adjustContainerScale);
+
+      // Check iframe status function remains the same
       const iframe = document.getElementById("kioskIframe");
 
       function checkIframeStatus() {
@@ -62,8 +85,8 @@
         iframe.src = iframe.src; // Reload the iframe
       }
 
-      // Check the iframe status every minute (60,000 ms)
-      setInterval(checkIframeStatus, 1000 * 60 * 5); // 60 seconds interval
+      // Check the iframe status every 5 minutes
+      setInterval(checkIframeStatus, 1000 * 60 * 5);
     </script>
   </body>
 </html>
